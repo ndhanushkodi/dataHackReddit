@@ -20,10 +20,10 @@
     </header>
 
     <div id="reddit-topics-over-time">
-        <a href="#" id="all" class="btn active">All Grants</a>
-        <a href="#" id="year" class="btn">Grants By Year</a>
+        <a href="#" id="all" class="btn active">All Topics</a>
+        <a href="#" id="year" class="btn">Topics By Year</a>
     </div>
-          <div id="vis"></div>
+    <div id="vis"></div>
 
 
 
@@ -40,7 +40,7 @@
 
     <script>
 
-    d3.json("gates.json", function(data) {
+    d3.json("reddit.json", function(data) {
         custom_bubble_chart.init(data);
         custom_bubble_chart.toggle_view('all');
     });
@@ -109,49 +109,66 @@
   var custom_bubble_chart = (function(d3, CustomTooltip) {
     "use strict";
 
-    var width = 940,
-        height = 600,
+    var width = document.getElementById('vis').offsetWidth,
+        height = document.getElementById('vis').offsetHeight,
         tooltip = CustomTooltip("gates_tooltip", 240),
-        layout_gravity = -0.01,
-        damper = 0.1,
+        layout_gravity = -0.1,
+        damper = 0.09,
         nodes = [],
-        vis, force, circles, radius_scale;
+        vis, force, circles, texts, radius_scale;
 
     var center = {x: width / 2, y: height / 2};
 
     var year_centers = {
-        "2008": {x: width / 3, y: height / 2},
-        "2009": {x: width / 2, y: height / 2},
-        "2010": {x: 2 * width / 3, y: height / 2}
+        "1/2015": {x: width / 3, y: height / 2},
+        "2/2015": {x: width / 2, y: height / 2},
+        "3/2015": {x: 2 * width / 3, y: height / 2}
       };
 
     var fill_color = d3.scale.ordinal()
-                    .domain(["low", "medium", "high"])
-                    .range(["#d84b2a", "#beccae", "#7aa25c"]);
+                    .range(["#f45998", "#ffaab7", "#fff19b","#df853b","#72a518","#2f3e53","#756c87","#a36d8f","#d27967","#3f7990","#6da35c","#cec038","#ea7048","#ff8fa5","#fffcb3","#aeffa2","#f7cbff","#b9fffd","#19df64","#8d248d"]);
 
     function custom_chart(data) {
-      var max_amount = d3.max(data, function(d) { return parseInt(d.total_amount, 10); } );
-      radius_scale = d3.scale.pow().exponent(0.5).domain([0, max_amount]).range([2, 85]);
-
+      var max_amount = d3.max(data, function(d) { 
+                for (var f = 0; f< d.weights.length; f++){return parseInt(d.weights[f], 10)
+                }});
+      radius_scale = d3.scale.pow().exponent(0.5).domain([0, max_amount]).range([2, 60]);
       //create node objects from original data
       //that will serve as the data behind each
       //bubble in the vis, then add each node
       //to nodes to be used later
+
+      var idxs = 0
       data.forEach(function(d){
-        var node = {
-          id: d.id,
-          radius: radius_scale(parseInt(d.total_amount, 10)),
-          value: d.total_amount,
-          name: d.grant_title,
-          org: d.organization,
-          group: d.group,
-          year: d.start_year,
-          x: Math.random() * 900,
-          y: Math.random() * 800
-        };
-        nodes.push(node);
+        // var node = {
+        //   id: d.id,
+        //   radius: radius_scale(parseInt(d.total_amount, 10)),
+        //   value: d.total_amount,
+        //   name: d.grant_title,
+        //   org: d.organization,
+        //   group: d.group,
+        //   year: d["Grant start date"],
+        //   x: Math.random() * 900,
+        //   y: Math.random() * 800
+        // };
+        for (var e = 0; e< d.weights.length; e++){
+          var node = {
+            value: d.weights[e],
+            name: d.words[e],
+            year: d.date,
+            radius: radius_scale(parseInt(d.weights[e])),
+            x: Math.random() * 900,
+            y: Math.random() * 800,
+            idxs: idxs,
+            group: d.id
+          }
+            // console.log(idxs)
+            nodes.push(node)
+            idxs = idxs + 1
+        }
       });
 
+      // console.log(nodes)
       nodes.sort(function(a, b) {return b.value- a.value; });
 
       vis = d3.select("#vis").append("svg")
@@ -160,18 +177,26 @@
                   .attr("id", "svg_vis");
 
       circles = vis.selectAll("circle")
-                   .data(nodes, function(d) { return d.id ;});
+                   .data(nodes, function(d) { return d.idxs ;});
 
       circles.enter().append("circle")
         .attr("r", 0)
         .attr("fill", function(d) { return fill_color(d.group) ;})
         .attr("stroke-width", 2)
         .attr("stroke", function(d) {return d3.rgb(fill_color(d.group)).darker();})
-        .attr("id", function(d) { return  "bubble_" + d.id; })
+        .attr("id", function(d) { return  "bubble_" + d.idxs; })
         .on("mouseover", function(d, i) {show_details(d, i, this);} )
         .on("mouseout", function(d, i) {hide_details(d, i, this);} );
 
-      circles.transition().duration(2000).attr("r", function(d) { return d.radius; });
+      texts = vis.selectAll("text")
+                      .data(nodes, function(d) {return d.idxs ;});
+
+      texts.enter().append("text")
+          .text(function(d) { return d.name})
+          .attr("font-family","'Open Sans Condensed', sans-serif")
+          .attr("dx", -10)
+
+      circles.transition().duration(2000).attr("r", function(d) { console.log(d.radius); return d.radius; });
 
     }
 
@@ -193,6 +218,10 @@
               circles.each(move_towards_center(e.alpha))
                      .attr("cx", function(d) {return d.x;})
                      .attr("cy", function(d) {return d.y;});
+
+              texts.each(move_towards_center(e.alpha))
+                     .attr("x", function(d) {return d.x;})
+                     .attr("y", function(d) {return d.y;});
            });
       force.start();
       hide_years();
@@ -200,8 +229,8 @@
 
     function move_towards_center(alpha) {
       return function(d) {
-        d.x = d.x + (center.x - d.x) * (damper + 0.02) * alpha;
-        d.y = d.y + (center.y - d.y) * (damper + 0.02) * alpha;
+        d.x = d.x + (center.x - d.x) * (damper + 0.01) * alpha;
+        d.y = d.y + (center.y - d.y) * (damper + 0.01) * alpha;
       };
     }
 
@@ -213,6 +242,10 @@
             circles.each(move_towards_year(e.alpha))
                    .attr("cx", function(d) {return d.x;})
                    .attr("cy", function(d) {return d.y;});
+
+            texts.each(move_towards_year(e.alpha))
+                   .attr("x", function(d) {return d.x;})
+                   .attr("y", function(d) {return d.y;});
           });
       force.start();
       display_years();
@@ -228,7 +261,7 @@
 
 
     function display_years() {
-        var years_x = {"2008": 160, "2009": width / 2, "2010": width - 160};
+        var years_x = {"1/2015": 160, "2/2015": width / 2, "3/2015": width - 160};
         var years_data = d3.keys(years_x);
         var years = vis.selectAll(".years")
                    .data(years_data);
@@ -248,9 +281,12 @@
 
 
     function show_details(data, i, element) {
+      console.log(data.group, element)
+      d3.select
       d3.select(element).attr("stroke", "black");
       var content = "<span class=\"name\">Title:</span><span class=\"value\"> " + data.name + "</span><br/>";
-      content +="<span class=\"name\">Year:</span><span class=\"value\"> " + data.year + "</span>";
+      content +="<span class=\"name\">Year:</span><span class=\"value\"> " + data.year + "</span><br/>";
+      content +="<span class=\"name\">Weight:</span><span class=\"value\"> " + data.value + "</span>";
       tooltip.showTooltip(content, d3.event);
     }
 

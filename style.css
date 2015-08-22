@@ -3,8 +3,8 @@ a, a:visited, a:active {
 }
 
 #vis {
-  width: 940px;
-  height: 600px;
+  width: 100%;
+  height: 700px;
   clear: both;
   margin-bottom: 10px;
 }
@@ -23,21 +23,26 @@ footer {
 }
 
 .tooltip {
-	position: absolute;
-	top: 100px;
-	left: 100px;
+  position: absolute;
+  top: 100px;
+  left: 100px;
+  text-align:left;
+  font-family: 'Open Sans Condensed', sans-serif;
+
+  -moz-box-shadow: 4px 4px 12px rgba(0,0,0,.5);
+  -webkit-box-shadow: 4px 4px 12px rgba(0,0,0,.5);
+  box-shadow: 4px 4px 12px rgba(0,0,0,.5);
+
   -moz-border-radius:5px;
-	border-radius: 5px;
-  border: 2px solid #000;
-	/* background: #222222; */
   background: #fff;
-	opacity: .9;
-	/* color: #eeeeee; */
-  color: black;
-	padding: 10px;
-	width: 300px;
-	font-size: 12px;
-	z-index: 10;
+  opacity: .9;
+  width: 300px;
+  border-radius: 5px;
+  font-size: 14px;
+  z-index: 10;
+  padding-left:10px;
+  padding-top:10px;
+  padding-bottom:10px;
 }
 
 .tooltip .title {
