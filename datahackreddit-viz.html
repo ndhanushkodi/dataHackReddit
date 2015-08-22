@@ -19,11 +19,12 @@
     <header>
     </header>
 
-    <div id="reddit-topics-over-time">
-        <a href="#" id="all" class="btn active">All Topics</a>
-        <a href="#" id="year" class="btn">Topics By Year</a>
-    </div>
     <div id="vis"></div>
+
+    <div id="reddit-topics-over-time">
+        <a href="#" id="all" class="learn-btn active">All Topics</a>
+        <a href="#" id="year" class="learn-btn">Topics By Year</a>
+    </div>
 
 
 
@@ -184,7 +185,7 @@
         .attr("fill", function(d) { return fill_color(d.group) ;})
         .attr("stroke-width", 2)
         .attr("stroke", function(d) {return d3.rgb(fill_color(d.group)).darker();})
-        .attr("id", function(d) { return  "bubble_" + d.idxs; })
+        .attr("id", function(d) { return  "bubble_" + d.group; })
         .on("mouseover", function(d, i) {show_details(d, i, this);} )
         .on("mouseout", function(d, i) {hide_details(d, i, this);} );
 
@@ -281,9 +282,7 @@
 
 
     function show_details(data, i, element) {
-      console.log(data.group, element)
-      d3.select
-      d3.select(element).attr("stroke", "black");
+      d3.selectAll('#'+ "bubble_" + data.group).attr("stroke", "black").attr("stroke-width","3px");
       var content = "<span class=\"name\">Title:</span><span class=\"value\"> " + data.name + "</span><br/>";
       content +="<span class=\"name\">Year:</span><span class=\"value\"> " + data.year + "</span><br/>";
       content +="<span class=\"name\">Weight:</span><span class=\"value\"> " + data.value + "</span>";
@@ -291,7 +290,7 @@
     }
 
     function hide_details(data, i, element) {
-      d3.select(element).attr("stroke", function(d) { return d3.rgb(fill_color(d.group)).darker();} );
+      d3.selectAll('#'+ "bubble_" + data.group).attr("stroke", function(d) { return d3.rgb(fill_color(d.group)).darker();} );
       tooltip.hideTooltip();
     }
 
