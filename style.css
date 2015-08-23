@@ -3,9 +3,17 @@ a, a:visited, a:active {
 }
 
 body {
-  background-color:#333;
+    background-image: radial-gradient(center bottom, ellipse cover, #939393, #333);
+    background-image: -o-radial-gradient(center bottom, ellipse cover, #939393, #333);
+    background-image: -ms-radial-gradient(center bottom, ellipse cover, #939393, #333);
+    background-image: -moz-radial-gradient(center bottom, ellipse cover, #939393, #333);
+    background-image: -webkit-radial-gradient(center bottom, ellipse cover, #939393, #333);
 }
 
+.shadow {
+    -webkit-filter: drop-shadow( -5px -5px 5px #000 );
+            filter: drop-shadow( -5px -5px 5px #000 ); /* Same syntax as box-shadow */
+}
 .learn-btn{
     display: inline-block;
     padding: 12px 40px;
@@ -14,7 +22,7 @@ body {
     border-radius: 3px;
     color: #fff;
     font-size: 16px;
-    font-family: 'Open Sans Condensed', sans-serif;
+    font-family: "Quicksand", sans-serif;
     font-weight: 700;
     letter-spacing: 1px;
     margin-left:10px;
@@ -31,9 +39,9 @@ body {
 #vis {
   margin-top:20px;
   width: 100%;
-  height: 700px;
+  height: 715px;
   clear: both;
-  margin-bottom: 10px;
+  margin-bottom: 50px;
 }
 
 footer {
@@ -47,7 +55,7 @@ footer {
 .years {
   font-size: 28px;
   fill: white;
-  font-family: 'Open Sans Condensed', sans-serif;
+  font-family: "Quicksand", sans-serif;
 }
 
 .tooltip {
@@ -55,7 +63,7 @@ footer {
   top: 100px;
   left: 100px;
   text-align:left;
-  font-family: 'Open Sans Condensed', sans-serif;
+  font-family: "Quicksand", sans-serif;
 
   -moz-box-shadow: 4px 4px 12px rgba(0,0,0,.5);
   -webkit-box-shadow: 4px 4px 12px rgba(0,0,0,.5);
