@@ -43,7 +43,7 @@
     <script>
 
 
-    d3.json("reddit.json", function(data) {
+    d3.json("reddit2.json", function(data) {
         custom_bubble_chart.init(data,width,height);
         custom_bubble_chart.toggle_view('all');
     });
@@ -125,12 +125,10 @@
     var center = {x: width / 2, y: height / 2};
 
     var year_centers = {
-        "1/2015": {x: 40 + width / 3.5, y: height / 2},
-        "2/2015": {x: 40 +width / 3, y: height / 2},
-        "3/2015": {x: 40 +width / 2.5, y: height / 2},
-        "4/2015": {x: 40 +width / 2 , y: height /2},
-        "5/2015": {x: 40 +width / 1.5, y: height /2},
-        "6/2015": {x: 40 +width, y: height /2}
+        "1/2015": {x: 80 + width / 4, y: height / 2},
+        "2/2015": {x: 80 +width / 3, y: height / 2},
+        "3/2015": {x: 60 +width / 2, y: height / 2},
+        "4/2015": {x: 60 +width / 1.5, y: height /2}
       };
 
     var fill_color = d3.scale.ordinal()
@@ -140,7 +138,7 @@
       var max_amount = d3.max(data, function(d) { 
                 for (var f = 0; f< d.weights.length; f++){return parseInt(d.weights[f], 10)
                 }});
-      radius_scale = d3.scale.pow().exponent(0.5).domain([0, max_amount]).range([2, 60]);
+      radius_scale = d3.scale.pow().exponent(0.5).domain([0, max_amount]).range([2, 45]);
       //create node objects from original data
       //that will serve as the data behind each
       //bubble in the vis, then add each node
@@ -299,7 +297,7 @@
 
 
     function display_years() {
-        var years_x = {"1/2015": 100, "2/2015": width / 6 +100, "3/2015": width /3 +100, "4/2015": width / 2+100, "5/2015": width*2 /3+100, "6/2015": width*5/6+100};
+        var years_x = {"1/2015": 100, "2/2015": width / 4 +100, "3/2015": width /2 +100, "4/2015": width*3 / 4+100};
         var years_data = d3.keys(years_x);
         var years = vis.selectAll(".years")
                    .data(years_data);
